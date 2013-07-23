@@ -213,20 +213,20 @@ public class DBRefTest extends TestCase {
         badrefs.drop();
         
         // no $ref
-        _db.eval("db.badrefs.save({'$id': 1})");
+        _db.eval("db.badrefs.insert({ ref: {$id: 1} });");
         // no $id
-        _db.eval("db.badrefs.save({'$ref': 'imaref'})");
+        _db.eval("db.badrefs.insert({ ref: {$ref: 'imaref'} });");
         // $id before $ref
-        _db.eval("db.badrefs.save({'$id': 1, '$ref': 'imaref'})");
+        _db.eval("db.badrefs.insert({ ref: {$id: 1, $ref: 'imaref'} });");
         // $ref first, $id third
-        _db.eval("db.badrefs.save({'$ref': 'imaref', 'other': 123, '$id': 'imanid'})");
+        _db.eval("db.badrefs.insert({ ref: {$ref: 'imaref', other: 123, $id: 'imanid'} });");
         // $ref is not a string
-        _db.eval("db.badrefs.save({'$ref': 123, '$id': 'imanid'})");
+        _db.eval("db.badrefs.insert({ ref: {$ref: 123, $id: 'imanid'} });");
         // $ref and $id are 2nd and 3rd
-        _db.eval("db.badrefs.save({'other': 123, '$ref': 'imaref', '$id': 'imanid'})");
+        _db.eval("db.badrefs.insert({ ref: {other: 123, $ref: 'imaref', $id: 'imanid'} });");
         
         for(DBObject mustNotBeDBRef : badrefs.find()) {
-            assertFalse(mustNotBeDBRef instanceof DBRef);
+            assertFalse(mustNotBeDBRef.get("ref") instanceof DBRef);
         }
     }
 
